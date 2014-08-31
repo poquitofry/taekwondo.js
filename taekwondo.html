@@ -109,34 +109,36 @@
             player2.left_hand.position.x = player2.left_hand.position.x - 50;
           }
           break;
-          
-
-      }
-     
-
-      // Kicking
-      if (code == 75 && !player1.rightFoot.kicking) { //k
-        player1.rightFoot.kicking = true;
-        player1.rightFoot.position.x = player1.rightFoot.position.x + 100;
-        player1.rightFoot.position.y = player1.rightFoot.position.y + 200;
-      }
-
-      if (code == 74 && !player1.leftFoot.kicking) {  //j
-        player1.leftFoot.kicking = true;
-        player1.leftFoot.position.x = player1.leftFoot.position.x - 100;
-        player1.leftFoot.position.y = player1.leftFoot.position.y + 200;
-      }
-
-      if (code == 99 && !player2.rightFoot.kicking) { //3keypad
-        player2.rightFoot.kicking = true;
-        player2.rightFoot.position.x = player2.rightFoot.position.x + 100;
-        player2.rightFoot.position.y = player2.rightFoot.position.y + 200;
-      }
-
-      if (code == 98 && !player2.leftFoot.kicking) {  //2keypad
-        player2.leftFoot.kicking = true;
-        player2.leftFoot.position.x = player2.leftFoot.position.x - 100;
-        player2.leftFoot.position.y = player2.leftFoot.position.y + 200;
+          // player1 kicking
+          case 75: //k
+            if (!player1.rightFoot.kicking) {
+              player1.rightFoot.kicking = true;
+              player1.rightFoot.position.x = player1.rightFoot.position.x + 100;
+              player1.rightFoot.position.y = player1.rightFoot.position.y + 200;
+            }
+          break;  
+          case 74: //j
+            if (!player1.leftFoot.kicking) {  
+              player1.leftFoot.kicking = true;
+              player1.leftFoot.position.x = player1.leftFoot.position.x - 100;
+              player1.leftFoot.position.y = player1.leftFoot.position.y + 200;
+            }
+          break;
+          //player2 kicking
+          case 99: //numpad3
+            if (!player2.rightFoot.kicking) { 
+              player2.rightFoot.kicking = true;
+              player2.rightFoot.position.x = player2.rightFoot.position.x + 100;
+              player2.rightFoot.position.y = player2.rightFoot.position.y + 200;
+            }
+          break;
+          case 98: //numpad2
+            if (!player2.leftFoot.kicking) {  
+              player2.leftFoot.kicking = true;
+              player2.leftFoot.position.x = player2.leftFoot.position.x - 100;
+              player2.leftFoot.position.y = player2.leftFoot.position.y + 200;
+            }
+          break;
       }
 
     });
@@ -144,55 +146,56 @@
     document.addEventListener('keyup', function(event) {
       var code = event.keyCode;
 
-      // Clear punches
-        player1
-      if (code == 73) { // i
-        player1.right_hand.position.x = player1.right_hand.position.x - 50;
-        player1.right_hand.punching = false;
-      }
-
-      if (code == 85) { // u
-        player1.left_hand.position.x = player1.left_hand.position.x + 50;
-        player1.left_hand.punching = false;
-      }
-
-        //player2 clear punch
-      if (code == 102) {  //6keypad
-        player2.right_hand.position.x = player2.right_hand.position.x - 50;
-        player2.right_hand.punching = false;
-      }
-
-      if (code == 101) {  //5keypad
-        player2.left_hand.position.x = player2.left_hand.position.x + 50;
-        player2.left_hand.punching = false;
-      }
-
-      // Clear kicks
-      if (code == 75) { // k
-        player1.rightFoot.position.x = player1.rightFoot.position.x - 100;
-        player1.rightFoot.position.y = player1.rightFoot.position.y - 200;
-        player1.rightFoot.kicking = false;
-      }
-
-      if (code == 74) { // j
-        player1.leftFoot.position.x = player1.leftFoot.position.x + 100;
-        player1.leftFoot.position.y = player1.leftFoot.position.y - 200;
-        player1.leftFoot.kicking = false;
-      }
-
-        //player2
-      if (code == 99) { //3
-        player2.rightFoot.position.x = player2.rightFoot.position.x - 100;
-        player2.rightFoot.position.y = player2.rightFoot.position.y - 200;
-        player2.rightFoot.kicking = false;
-      }
-
-      if (code == 98) { //2Numpad
-        player2.leftFoot.position.x = player2.leftFoot.position.x + 100;
-        player2.leftFoot.position.y = player2.leftFoot.position.y - 200;
-        player2.leftFoot.kicking = false;
-      }
-    });
+        switch(code) {
+          //player1 clear punch
+          case 73: { // i
+            player1.right_hand.position.x = player1.right_hand.position.x - 50;
+            player1.right_hand.punching = false;
+          }
+          break; 
+          case 85: { // u
+            player1.left_hand.position.x = player1.left_hand.position.x + 50;
+            player1.left_hand.punching = false;
+          }
+          //player2 clear punch
+          break; 
+          case 102: {  //6keypad
+            player2.right_hand.position.x = player2.right_hand.position.x - 50;
+            player2.right_hand.punching = false;
+          }
+          break; 
+          case 101: {  //5keypad
+            player2.left_hand.position.x = player2.left_hand.position.x + 50;
+            player2.left_hand.punching = false;
+          }
+          // player 1 Clear kicks
+          break; 
+          case 75: { // k
+            player1.rightFoot.position.x = player1.rightFoot.position.x - 100;
+            player1.rightFoot.position.y = player1.rightFoot.position.y - 200;
+            player1.rightFoot.kicking = false;
+          }
+          break; 
+          case 74: { // j
+            player1.leftFoot.position.x = player1.leftFoot.position.x + 100;
+            player1.leftFoot.position.y = player1.leftFoot.position.y - 200;
+            player1.leftFoot.kicking = false;
+          }
+          //player2 clear kicks
+          break;
+          case 99: { //3
+            player2.rightFoot.position.x = player2.rightFoot.position.x - 100;
+            player2.rightFoot.position.y = player2.rightFoot.position.y - 200;
+            player2.rightFoot.kicking = false;
+          }
+          break; 
+          case 98: { //2Numpad
+            player2.leftFoot.position.x = player2.leftFoot.position.x + 100;
+            player2.leftFoot.position.y = player2.leftFoot.position.y - 200;
+            player2.leftFoot.kicking = false;
+          }
+        }
+  });
 
 // //MOVING
 //   function walk() {
