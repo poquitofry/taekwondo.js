@@ -81,28 +81,38 @@
     document.addEventListener('keydown', function(event) {
       var code = event.keyCode;
 
-      //Punching
-        //player1 punch
-      if (code == 73 && !player1.right_hand.punching) {  //i
-        player1.right_hand.punching = true;
-        player1.right_hand.position.x = player1.right_hand.position.x + 50;
-      }
+      switch(code){
 
-      if (code == 85 && !player1.left_hand.punching) {  //u
-        player1.left_hand.punching = true;
-        player1.left_hand.position.x = player1.left_hand.position.x - 50;
-      }
-
-        //player2 punch
-      if (code == 102 && !player2.right_hand.punching) {  //6keypad
-        player2.right_hand.punching = true;
+        // player 1 punching
+        case 73: // I
+          if (!player1.right_hand.punching) {
+            player1.right_hand.punching = true;
+            player1.right_hand.position.x = player1.right_hand.position.x + 50;
+          }
+          break;
+        case 85: // U
+          if (!player1.left_hand.punching) {
+            player1.left_hand.punching = true;
+            player1.left_hand.position.x = player1.left_hand.position.x - 50;
+          }
+          break;
+        // player 2 punching
+        case 102: // numpad6
+          if (!player2.right_hand.punching)  {
+             player2.right_hand.punching = true;
         player2.right_hand.position.x = player2.right_hand.position.x + 50;
-      }
+          }
+          break;
+        case 101: //numpad5
+          if (!player2.left_hand.punching) {
+            player2.left_hand.punching = true;
+            player2.left_hand.position.x = player2.left_hand.position.x - 50;
+          }
+          break;
+          
 
-      if (code == 101 && !player2.left_hand.punching) {  // 5keypad
-        player2.left_hand.punching = true;
-        player2.left_hand.position.x = player2.left_hand.position.x - 50;
       }
+     
 
       // Kicking
       if (code == 75 && !player1.rightFoot.kicking) { //k
