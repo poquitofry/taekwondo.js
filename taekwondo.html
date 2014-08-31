@@ -139,11 +139,19 @@
             player2.leftFoot.position.y = player2.leftFoot.position.y + 200;
           }
           break;
+        //player1 movement
         case 68: //d
           player1.body.position.x = player1.body.position.x+5; //right
           break;
         case 65: //a
           player1.body.position.x = player1.body.position.x-5; //left
+          break;
+        //player2 movement
+        case 39: //right arrowkey
+          player2.body.position.x = player2.body.position.x+5; //right
+          break;
+        case 37: //left arrowkey
+          player2.body.position.x = player2.body.position.x-5; //left
           break;
       }
     });
