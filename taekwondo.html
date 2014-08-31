@@ -33,29 +33,29 @@
     var handSphere = new THREE.SphereGeometry(25);
 
     this.right_hand = new THREE.Mesh(handSphere, cover);
-    this.right_hand.position.set(this.coords.x + 50, this.coords.y + 10, this.coords.z);
+    this.right_hand.position.set(50, 10, 0);
 
     this.left_hand = new THREE.Mesh(handSphere, cover);
-    this.left_hand.position.set(this.coords.x - 50, this.coords.y + 10, this.coords.z);
+    this.left_hand.position.set(-50, 10, 0);
 
-    scene.add(this.right_hand);
-    scene.add(this.left_hand);
+    this.body.add(this.right_hand);
+    this.body.add(this.left_hand);
 
 
     // add head to avatar
     var headSphere = new THREE.SphereGeometry(50);
     this.head = new THREE.Mesh(headSphere, cover);
-    this.head.position.set(this.coords.x, this.coords.y + 130, this.coords.z);
-    scene.add(this.head);
+    this.head.position.set(0, 130, 0);
+    this.body.add(this.head);
 
     // add feet to avatar
     this.leftFoot = new THREE.Mesh(handSphere, cover);
-    this.leftFoot.position.set(this.coords.x - 45, this.coords.y - 210, this.coords.z);
-    scene.add(this.leftFoot);
+    this.leftFoot.position.set(-45, -210, 0);
+    this.body.add(this.leftFoot);
 
     this.rightFoot = new THREE.Mesh(handSphere, cover);
-    this.rightFoot.position.set(this.coords.x + 45, this.coords.y - 210, this.coords.z);
-    scene.add(this.rightFoot);
+    this.rightFoot.position.set(45, -210, 0);
+    this.body.add(this.rightFoot);
   }
 
   var player1 = new Avatar(new THREE.Vector3(200, 0, 0));
