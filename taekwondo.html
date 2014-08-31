@@ -1,0 +1,243 @@
+<body></body>
+<script src="http://gamingJS.com/Three.js"></script>
+<script src="http://gamingJS.com/ChromeFixes.js"></script>
+<script src="http://gamingJS.com/Scoreboard.js"></script>
+<script>
+  // This is where stuff in our game will happen:
+  var scene = new THREE.Scene();
+
+  // This is what sees the stuff:
+  var aspect_ratio = window.innerWidth / window.innerHeight;
+  var camera = new THREE.PerspectiveCamera(75, aspect_ratio, 1, 10000);
+  camera.position.z = 500;
+  scene.add(camera);
+
+  // This will draw what the camera sees onto the screen:
+  var renderer = new THREE.CanvasRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  // ******** START CODING ON THE NEXT LINE ********
+  function Avatar(position) {
+    this.coords = position || new THREE.Vector3(0, 0, 0);
+
+    var cover = new THREE.MeshNormalMaterial();
+
+    //add body to avatar
+    var bodyCylinder = new THREE.CylinderGeometry(7, 7, 150);
+    this.body = new THREE.Mesh(bodyCylinder, cover);
+    this.body.position.set(this.coords.x, this.coords.y, this.coords.z);
+    scene.add(this.body);
+
+    //add hands to avatar
+    var handSphere = new THREE.SphereGeometry(25);
+
+    this.right_hand = new THREE.Mesh(handSphere, cover);
+    this.right_hand.position.set(this.coords.x + 50, this.coords.y + 10, this.coords.z);
+
+    this.left_hand = new THREE.Mesh(handSphere, cover);
+    this.left_hand.position.set(this.coords.x - 50, this.coords.y + 10, this.coords.z);
+
+    scene.add(this.right_hand);
+    scene.add(this.left_hand);
+
+
+    // add head to avatar
+    var headSphere = new THREE.SphereGeometry(50);
+    this.head = new THREE.Mesh(headSphere, cover);
+    this.head.position.set(this.coords.x, this.coords.y + 130, this.coords.z);
+    scene.add(this.head);
+
+    // add feet to avatar
+    this.leftFoot = new THREE.Mesh(handSphere, cover);
+    this.leftFoot.position.set(this.coords.x - 45, this.coords.y - 210, this.coords.z);
+    scene.add(this.leftFoot);
+
+    this.rightFoot = new THREE.Mesh(handSphere, cover);
+    this.rightFoot.position.set(this.coords.x + 45, this.coords.y - 210, this.coords.z);
+    scene.add(this.rightFoot);
+  }
+
+  var player1 = new Avatar(new THREE.Vector3(200, 0, 0));
+  var player2 = new Avatar(new THREE.Vector3(-200, 0, 0));
+
+ 	//reference box
+ 	var shape = new THREE.CubeGeometry(50, 50, 50);
+ 	var cover = new THREE.MeshNormalMaterial();
+ 	var box = new THREE.Mesh(shape, cover);
+ 	scene.add(box);
+ 	box.position.set(-120, 0, 0);
+
+  // Now, show what the camera sees on the screen:
+  var clock = new THREE.Clock(true);
+  function animate() {
+  	requestAnimationFrame(animate);
+  	//walk();
+  	renderer.render(scene, camera);
+  }
+  animate();
+
+ //PUNCHING & KICKING
+    document.addEventListener('keydown', function(event) {
+      var code = event.keyCode;
+
+      //Punching
+        //player1 punch
+      if (code == 73 && !player1.right_hand.punching) {  //i
+        player1.right_hand.punching = true;
+        player1.right_hand.position.x = player1.right_hand.position.x + 50;
+      }
+
+      if (code == 85 && !player1.left_hand.punching) {  //u
+        player1.left_hand.punching = true;
+        player1.left_hand.position.x = player1.left_hand.position.x - 50;
+      }
+
+        //player2 punch
+      if (code == 102 && !player2.right_hand.punching) {  //6keypad
+        player2.right_hand.punching = true;
+        player2.right_hand.position.x = player2.right_hand.position.x + 50;
+      }
+
+      if (code == 101 && !player2.left_hand.punching) {  // 5keypad
+        player2.left_hand.punching = true;
+        player2.left_hand.position.x = player2.left_hand.position.x - 50;
+      }
+
+      // Kicking
+      if (code == 75 && !player1.rightFoot.kicking) { //k
+        player1.rightFoot.kicking = true;
+        player1.rightFoot.position.x = player1.rightFoot.position.x + 100;
+        player1.rightFoot.position.y = player1.rightFoot.position.y + 200;
+      }
+
+      if (code == 74 && !player1.leftFoot.kicking) {  //j
+        player1.leftFoot.kicking = true;
+        player1.leftFoot.position.x = player1.leftFoot.position.x - 100;
+        player1.leftFoot.position.y = player1.leftFoot.position.y + 200;
+      }
+
+      if (code == 99 && !player2.rightFoot.kicking) { //3keypad
+        player2.rightFoot.kicking = true;
+        player2.rightFoot.position.x = player2.rightFoot.position.x + 100;
+        player2.rightFoot.position.y = player2.rightFoot.position.y + 200;
+      }
+
+      if (code == 98 && !player2.leftFoot.kicking) {  //2keypad
+        player2.leftFoot.kicking = true;
+        player2.leftFoot.position.x = player2.leftFoot.position.x - 100;
+        player2.leftFoot.position.y = player2.leftFoot.position.y + 200;
+      }
+
+    });
+
+    document.addEventListener('keyup', function(event) {
+      var code = event.keyCode;
+
+      // Clear punches
+        player1
+      if (code == 73) { // i
+        player1.right_hand.position.x = player1.right_hand.position.x - 50;
+        player1.right_hand.punching = false;
+      }
+
+      if (code == 85) { // u
+        player1.left_hand.position.x = player1.left_hand.position.x + 50;
+        player1.left_hand.punching = false;
+      }
+
+        //player2 clear punch
+      if (code == 102) {  //6keypad
+        player2.right_hand.position.x = player2.right_hand.position.x - 50;
+        player2.right_hand.punching = false;
+      }
+
+      if (code == 101) {  //5keypad
+        player2.left_hand.position.x = player2.left_hand.position.x + 50;
+        player2.left_hand.punching = false;
+      }
+
+      // Clear kicks
+      if (code == 75) { // k
+        player1.rightFoot.position.x = player1.rightFoot.position.x - 100;
+        player1.rightFoot.position.y = player1.rightFoot.position.y - 200;
+        player1.rightFoot.kicking = false;
+      }
+
+      if (code == 74) { // j
+        player1.leftFoot.position.x = player1.leftFoot.position.x + 100;
+        player1.leftFoot.position.y = player1.leftFoot.position.y - 200;
+        player1.leftFoot.kicking = false;
+      }
+
+        //player2
+      if (code == 99) { //3
+        player2.rightFoot.position.x = player2.rightFoot.position.x - 100;
+        player2.rightFoot.position.y = player2.rightFoot.position.y - 200;
+        player2.rightFoot.kicking = false;
+      }
+
+      if (code == 98) { //2Numpad
+        player2.leftFoot.position.x = player2.leftFoot.position.x + 100;
+        player2.leftFoot.position.y = player2.leftFoot.position.y - 200;
+        player2.leftFoot.kicking = false;
+      }
+    });
+
+// //MOVING
+//   function walk() {
+//   	if (!isWalking()) return;
+//   	var position = Math.sin(clock.getElapsedTime()*5) * 50;
+//   	// var rotation = Math.sin(clock.getElapsedTime()*.01) * 50;
+//   	right_foot.position.z = -position;
+//   	left_foot.position.z = position;
+//   	// right_leg.rotation.x = -position;
+//   	// left_leg.rotation.x = position;
+//   }
+
+//   var is_moving_right, is_moving_left; //is_moving_forward, is_moving_back;
+//   function isWalking() {
+//   	if (is_moving_right) return true;
+//   	if (is_moving_left) return true;
+//   	// if (is_moving_forward) return true;
+//   	// if (is_moving_back) return true;
+//   	return false;
+//   }
+
+//   document.addEventListener('keydown', function(event) {
+//   	var code = event.keyCode;
+// 	  if (code == 72) {    //72k left
+// 		  avatar.position.x = avatar.position.x-5; //left-
+// 		  is_moving_left = true;
+// 	  }
+
+//       if (code == 75) {   //75k right
+//       avatar.position.x = avatar.position.x+5; //right
+//       is_moving_right = true;
+    //}
+
+
+  	// if (code == 38) {
+  	// 	avatar.position.z = avatar.position.z-5; //up
+  	// 	is_moving_forward = true;
+  	// }
+
+  	// if (code == 40) {
+  	// 	avatar.position.z = avatar.position.z+5; //down
+  	// 	is_moving_back = true;
+  	// }
+  //});
+
+  // document.addEventListener('keyup', function(event) {
+  // 	var code = event.keyCode;
+  // 	// if (code == 37) is_moving_left = false;
+  // 	// if (code == 38) is_moving_forward = false;
+  // 	if (code == 75) is_moving_right = false; //k-right
+  // 	if (code == 72) is_moving_back = false;//h-left
+  // });
+
+//listen for keypress
+  // document.addEventListener('keydown', function(event) {
+  //   alert(event.keyCode);
+  // });
+</script>
