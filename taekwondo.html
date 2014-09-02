@@ -1,5 +1,5 @@
 <body></body>
-<script src="http://gamingJS.com/Three.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.js"></script>
 <script src="http://gamingJS.com/ChromeFixes.js"></script>
 <script src="http://gamingJS.com/Scoreboard.js"></script>
 <script>
@@ -27,6 +27,8 @@
     var bodyCylinder = new THREE.CylinderGeometry(7, 7, 150);
     this.body = new THREE.Mesh(bodyCylinder, cover);
     this.body.position.set(this.coords.x, this.coords.y, this.coords.z);
+    this.body.width = 14;
+    this.body.height = 150;
     scene.add(this.body);
 
     //add hands to avatar
@@ -58,6 +60,30 @@
     this.body.add(this.rightFoot);
   }
 
+  Avatar.prototype.spheresCollide = function(mesh1, mesh2) {
+    var vector1 = new THREE.Vector3();
+    var vector2 = new THREE.Vector3();
+    vector1.setFromMatrixPosition(mesh1.matrixWorld);
+    vector2.setFromMatrixPosition(mesh2.matrixWorld);
+    console.log("vector1x" + vector1.x + "vector1y" + vector1.y);
+    console.log("vector2x" + vector2.x + "vector2y" + vector2.y);
+
+    var radiusSum = mesh1.geometry.boundingSphere.radius + mesh2.geometry.boundingSphere.radius;
+    var distx = Math.abs(vector1.x - (vector2.x -50));
+    var disty = Math.abs(vector1.y - vector2.y);
+    var distance = Math.sqrt(Math.pow(distx, 2) + Math.pow(disty, 2));
+    console.log("radiusSum" + radiusSum);
+    console.log("distx" + distx);
+    console.log("disty" + disty);
+    console.log("distance" + distance);
+    if (distance <= radiusSum) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   var player1 = new Avatar(new THREE.Vector3(-200, 0, 0));
   var player2 = new Avatar(new THREE.Vector3(200, 0, 0));
 
@@ -86,8 +112,14 @@
         // player 1 punching
         case 73: // I
           if (!player1.right_hand.punching) {
+            if (player1.spheresCollide(player1.right_hand, player2.left_hand)) {
+              alert("hit!");
+            }
             player1.right_hand.punching = true;
             player1.right_hand.position.x = player1.right_hand.position.x + 50;
+            if (player1.spheresCollide(player1.right_hand, player2.left_hand)) {
+              alert("hit!");
+            }
           }
           break;
         case 85: // U
