@@ -10,7 +10,7 @@
     <script type="text/javascript">
     window.onload = function() {
 
-        var game = new Phaser.Game(1280, 1040, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        game = new Phaser.Game(1280, 1040, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
         var platforms;
         var cursors;
         var p1;
@@ -110,6 +110,12 @@
                 this.rFoot.y = this.y + this.rFootOffset.y;
 
             },
+            moveLeft: function () {
+                this.x -= 2;
+            },
+            moveRight: function () {
+                this.x += 2;
+            },
             punch: function (hand) {
                 if (hand == 'right')
                 {
@@ -119,6 +125,11 @@
                 {
                     this.lHand.punching = true;
                 }
+            },
+
+            pBody: function ()
+            {
+                console.log("HIT TO BODY");
             }
         };
         
@@ -127,10 +138,11 @@
             game.load.image('handfoot', 'assets/handfoot.png');
             game.load.image('body', 'assets/body.png');
             game.load.image('ground', 'assets/platform.png');
-
         }
 
         function create() {
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+
             p1_left = game.input.keyboard.addKey(Phaser.Keyboard.A);
             p1_right = game.input.keyboard.addKey(Phaser.Keyboard.D);
             p1_punch = game.input.keyboard.addKey(Phaser.Keyboard.R);
@@ -141,8 +153,8 @@
             p2_right = game.input.keyboard.addKey(102);
             p2_punch = game.input.keyboard.addKey(103);
 
-            p1 = new Player(game, 300, 300);
-            p2 = new Player(game, 600, 300);
+            p1 = new Player(game, 100, 300);
+            p2 = new Player(game, 700, 300);
         }
 
         function update() {
@@ -150,33 +162,55 @@
             // Controls go here!
             if (p1_left.isDown)
             {
-                p1.x--;
+                p1.moveLeft();
             }
             if (p1_right.isDown)
             {
-                p1.x++;
+                p1.moveRight();
             }
             if (p1_punch.isDown)
             {
                 p1.punch('right');
+                if (p1.rHand.overlap(p2.body))
+                    {
+                        p1.pBody();
+                    }
             }
 
             if (p2_left.isDown)
             {
-                p2.x--;
+                p2.moveLeft();
             }
             if (p2_right.isDown)
             {
-                p2.x++;
+                p2.moveRight();
             }
 
             if (p2_punch.isDown)
             {
                 p2.punch('left');
+                if (p2.lHand.overlap(p1.body))
+                    {
+                        p2.pBody();
+                    }
             }
 
             p1.update();
             p2.update();
+            
+            game.stage.backgroundColor = '#2d2d2d';
+
+            game.physics.arcade.collide(p1.body, p2.body, bodyTouch, null, this);
+        }
+
+        function render() {
+            game.debug.bodyInfo(p1.rHand, 16, 24);
+        }
+
+        function bodyTouch(obj1, obj2)
+        {
+            game.stage.backgroundColor = '#992d2d';
+            console.log("HIT!");
         }
 
     };
