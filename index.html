@@ -24,6 +24,7 @@
 
         var p2_left;
         var p2_right;
+        var p2_punch;
 
         function Player(game, x, y)
         {
@@ -35,11 +36,15 @@
             };
             this.lHandOffset = {
                 x: -25,
-                y: 110
+                y: 110,
+                punchX: -75,
+                punchY: 110
             };
             this.rHandOffset = {
                 x: 75,
-                y: 110
+                y: 110,
+                punchX: 125,
+                punchY: 110
             }
             this.lFootOffset = {
                 x: -30,
@@ -50,6 +55,7 @@
                 y: 310
             }
 
+
             this.head = game.add.sprite(x,y, 'head');
 
             this.body = game.add.sprite(x + this.bodyOffset.x, y + this.bodyOffset.y, 'body');
@@ -59,6 +65,12 @@
 
             this.lFoot = game.add.sprite(x + this.lFootOffset.x, y + this.lFootOffset.y, 'handfoot');
             this.rFoot = game.add.sprite(x + this.rFootOffset.x, y + this.rFootOffset.y, 'handfoot');
+
+            this.lHand.punching = false;
+            this.rHand.punching = false;
+
+            this.lFoot.kicking = false;
+            this.rFoot.kicking = false;
         };
 
         Player.prototype = {
@@ -69,11 +81,27 @@
                 this.body.x = this.x + this.bodyOffset.x;
                 this.body.y = this.y + this.bodyOffset.y;
 
-                this.lHand.x = this.x + this.lHandOffset.x;
-                this.lHand.y = this.y + this.lHandOffset.y;
+                if (this.lHand.punching) {
+                    this.lHand.x = this.x + this.lHandOffset.punchX;
+                    this.lHand.y = this.y + this.lHandOffset.punchY;
+                }
+                else
+                {
+                    this.lHand.x = this.x + this.lHandOffset.x;
+                    this.lHand.y = this.y + this.lHandOffset.y;
+                }
+                this.lHand.punching = false;
 
-                this.rHand.x = this.x + this.rHandOffset.x;
-                this.rHand.y = this.y + this.rHandOffset.y;
+                if (this.rHand.punching) {
+                    this.rHand.x = this.x + this.rHandOffset.punchX;
+                    this.rHand.y = this.y + this.rHandOffset.punchY;
+                }
+                else
+                {
+                    this.rHand.x = this.x + this.rHandOffset.x;
+                    this.rHand.y = this.y + this.rHandOffset.y;
+                }
+                this.rHand.punching = false;
 
                 this.lFoot.x = this.x + this.lFootOffset.x;
                 this.lFoot.y = this.y + this.lFootOffset.y;
@@ -81,6 +109,16 @@
                 this.rFoot.x = this.x + this.rFootOffset.x;
                 this.rFoot.y = this.y + this.rFootOffset.y;
 
+            },
+            punch: function (hand) {
+                if (hand == 'right')
+                {
+                    this.rHand.punching = true;
+                }
+                else 
+                {
+                    this.lHand.punching = true;
+                }
             }
         };
         
@@ -101,6 +139,7 @@
 
             p2_left = game.input.keyboard.addKey(100);
             p2_right = game.input.keyboard.addKey(102);
+            p2_punch = game.input.keyboard.addKey(103);
 
             p1 = new Player(game, 300, 300);
             p2 = new Player(game, 600, 300);
@@ -117,6 +156,10 @@
             {
                 p1.x++;
             }
+            if (p1_punch.isDown)
+            {
+                p1.punch('right');
+            }
 
             if (p2_left.isDown)
             {
@@ -125,6 +168,11 @@
             if (p2_right.isDown)
             {
                 p2.x++;
+            }
+
+            if (p2_punch.isDown)
+            {
+                p2.punch('left');
             }
 
             p1.update();
