@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>hello phaser!</title>
+        <script src="js/phaser.js"></script>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+    window.onload = function() {
+
+        var game = new Phaser.Game(1280, 1040, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        var platforms;
+        var cursors;
+        var p1;
+        var p2;
+
+        var p1_left;
+        var p1_right;
+        var p1_punch;
+        var p1_kick;
+        var p1_block;
+
+        var p2_left;
+        var p2_right;
+
+        function Player(game, x, y)
+        {
+            this.x = x;
+            this.y = y;
+            this.bodyOffset = {
+                x: 40,
+                y: 100
+            };
+            this.lHandOffset = {
+                x: -25,
+                y: 110
+            };
+            this.rHandOffset = {
+                x: 75,
+                y: 110
+            }
+            this.lFootOffset = {
+                x: -30,
+                y: 310
+            };
+            this.rFootOffset = {
+                x: 80,
+                y: 310
+            }
+
+            this.head = game.add.sprite(x,y, 'head');
+
+            this.body = game.add.sprite(x + this.bodyOffset.x, y + this.bodyOffset.y, 'body');
+
+            this.lHand = game.add.sprite(x + this.lHandOffset.x, y + this.lHandOffset.y, 'handfoot');
+            this.rHand = game.add.sprite(x + this.rHandOffset.x, y + this.rHandOffset.y, 'handfoot');
+
+            this.lFoot = game.add.sprite(x + this.lFootOffset.x, y + this.lFootOffset.y, 'handfoot');
+            this.rFoot = game.add.sprite(x + this.rFootOffset.x, y + this.rFootOffset.y, 'handfoot');
+        };
+
+        Player.prototype = {
+            update: function () {
+                this.head.x = this.x;
+                this.head.y = this.y;
+
+                this.body.x = this.x + this.bodyOffset.x;
+                this.body.y = this.y + this.bodyOffset.y;
+
+                this.lHand.x = this.x + this.lHandOffset.x;
+                this.lHand.y = this.y + this.lHandOffset.y;
+
+                this.rHand.x = this.x + this.rHandOffset.x;
+                this.rHand.y = this.y + this.rHandOffset.y;
+
+                this.lFoot.x = this.x + this.lFootOffset.x;
+                this.lFoot.y = this.y + this.lFootOffset.y;
+
+                this.rFoot.x = this.x + this.rFootOffset.x;
+                this.rFoot.y = this.y + this.rFootOffset.y;
+
+            }
+        };
+        
+        function preload() {
+            game.load.image('head', 'assets/head.png');
+            game.load.image('handfoot', 'assets/handfoot.png');
+            game.load.image('body', 'assets/body.png');
+            game.load.image('ground', 'assets/platform.png');
+
+        }
+
+        function create() {
+            p1_left = game.input.keyboard.addKey(Phaser.Keyboard.A);
+            p1_right = game.input.keyboard.addKey(Phaser.Keyboard.D);
+            p1_punch = game.input.keyboard.addKey(Phaser.Keyboard.R);
+            p1_kick = game.input.keyboard.addKey(Phaser.Keyboard.F);
+            p1_block = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+
+            p2_left = game.input.keyboard.addKey(100);
+            p2_right = game.input.keyboard.addKey(102);
+
+            p1 = new Player(game, 300, 300);
+            p2 = new Player(game, 600, 300);
+        }
+
+        function update() {
+
+            // Controls go here!
+            if (p1_left.isDown)
+            {
+                p1.x--;
+            }
+            if (p1_right.isDown)
+            {
+                p1.x++;
+            }
+
+            if (p2_left.isDown)
+            {
+                p2.x--;
+            }
+            if (p2_right.isDown)
+            {
+                p2.x++;
+            }
+
+            p1.update();
+            p2.update();
+        }
+
+    };
+
+    </script>
+
+    </body>
+</html>
