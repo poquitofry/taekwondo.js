@@ -14,6 +14,10 @@
         var platforms;
         var cursors;
 
+        var punchsound;
+        var hitsuccess;
+        var win;
+
         var scoreText;
         var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
 
@@ -163,6 +167,7 @@
                 {
                     this.lHand.punching = true;
                 }
+                if (!punchsound.isPlaying) {punchsound.play();};
             },
             //added kick function
             kick: function (foot) {
@@ -174,6 +179,7 @@
                 {
                     this.lFoot.kicking = true;
                 }
+                if (!punchsound.isPlaying) {punchsound.play();};
             },
 
             pBody: function ()
@@ -182,6 +188,7 @@
 
                 console.log("score: " + this.score);
                 console.log("HIT TO BODY");
+                hitsuccess.play();
             }
         };
 
@@ -190,10 +197,17 @@
             game.load.image('handfoot', 'assets/handfoot.png');
             game.load.image('body', 'assets/body.png');
             game.load.image('ground', 'assets/platform.png');
+            game.load.audio('success', 'assets/hitsuccess.wav');
+            game.load.audio('punch', 'assets/punch.wav');
+            game.load.audio('win', 'assets/win.wav');
         }
 
         function create() {
             game.physics.startSystem(Phaser.Physics.ARCADE);
+
+            punchsound = game.add.audio('punch');
+            hitsuccess = game.add.audio('success');
+            win = game.add.audio('win')
 
             scoreText = game.add.text(20, 20, '', style);
 
@@ -225,6 +239,7 @@
             }
             if (p1_punch.isDown)
             {
+                
                 p1.punch('right');
                 if (p1.rHand.overlap(p2.body))
                     {
@@ -281,10 +296,12 @@
             if (p1.score >= 5)
             {
                 scoreText.text = 'Player 1: ' + p1.score + '\nPlayer 1 wins!';
+                if (!win.isPlaying) {win.play();};
             }
             else if (p2.score >= 5)
             {
                 scoreText.text = 'Player 2: ' + p2.score + '\nPlayer 2 wins!';
+                if (!win.isPlaying) {win.play();};
             }
             else 
             {
