@@ -278,8 +278,19 @@
 
             p1.update();
             p2.update();
+            if (p1.score >= 5)
+            {
+                scoreText.text = 'Player 1: ' + p1.score + '\nPlayer 1 wins!';
+            }
+            else if (p2.score >= 5)
+            {
+                scoreText.text = 'Player 2: ' + p2.score + '\nPlayer 2 wins!';
+            }
+            else 
+            {
+                scoreText.text = 'player 1: ' + p1.score + '\nplayer 2: ' + p2.score;
+            }
 
-            scoreText.text = 'player 1: ' + p1.score + '\nplayer 2: ' + p2.score;
 
 
             game.stage.backgroundColor = '#2d2d2d';
@@ -288,7 +299,6 @@
 
         function render() {
             game.debug.bodyInfo(p1.rHand, 16, 24);
-
         }
 
 
