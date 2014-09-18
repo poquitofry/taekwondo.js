@@ -1,18 +1,22 @@
-<!doctype html>
+<!doctype html> 
 <html>
     <head>
-        <meta charset="UTF-8" />
+        <meta charset="UTF-8" />    
         <title>hello phaser!</title>
         <script src="js/phaser.js"></script>
     </head>
     <body>
 
     <script type="text/javascript">
-    window.onload = function() {
+    window.onload = function() { //when you load window, run this script
 
-        game = new Phaser.Game(1280, 1040, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
+        game = new Phaser.Game(1280, 1040, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });  //what is Phaser, why repeat
         var platforms;
         var cursors;
+
+        var scoreText;
+        var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
+
         var p1;
         var p2;
 
@@ -25,9 +29,14 @@
         var p2_left;
         var p2_right;
         var p2_punch;
+        var p2_kick;
 
-        function Player(game, x, y)
+        function Player(game, x, y) //sprites are added to game and player is just a collection of data
         {
+            this.score = 0;
+            this.startingX = x;
+            this.startingY = y;
+
             this.x = x;
             this.y = y;
             this.bodyOffset = {
@@ -48,12 +57,16 @@
             }
             this.lFootOffset = {
                 x: -30,
-                y: 310
+                y: 310,
+                kickX: -150,
+                kickY: 100
             };
             this.rFootOffset = {
                 x: 80,
-                y: 310
-            }
+                y: 310,
+                kickX: 150,
+                kickY: 100
+            };
 
 
             this.head = game.add.sprite(x,y, 'head');
@@ -74,7 +87,7 @@
         };
 
         Player.prototype = {
-            update: function () {
+            update: function () {   //updates punch (and kick) to false automatically by default  so unless it's made true, it will always be false
                 this.head.x = this.x;
                 this.head.y = this.y;
 
@@ -103,19 +116,44 @@
                 }
                 this.rHand.punching = false;
 
-                this.lFoot.x = this.x + this.lFootOffset.x;
-                this.lFoot.y = this.y + this.lFootOffset.y;
+                //kicking
+                if (this.lFoot.kicking) {
+                    this.lFoot.x = this.x + this.lFootOffset.kickX;
+                    this.lFoot.y = this.y + this.lFootOffset.kickY;
+                }
+                else
+                {
+                    this.lFoot.x = this.x + this.lFootOffset.x;
+                    this.lFoot.y = this.y + this.lFootOffset.y;
+                }
+                this.lFoot.kicking = false;
 
+                if (this.rFoot.kicking) {
+                    this.rFoot.x = this.x + this.rFootOffset.kickX;
+                    this.rFoot.y = this.y + this.rFootOffset.kickY;
+                }
+                else
+                {
                 this.rFoot.x = this.x + this.rFootOffset.x;
                 this.rFoot.y = this.y + this.rFootOffset.y;
-
+                }
+                this.rFoot.kicking = false;
             },
-            moveLeft: function () {
+
+
+
+            moveLeft: function () { // (x += 1) is the same as (x = x + 1)
                 this.x -= 2;
             },
             moveRight: function () {
                 this.x += 2;
             },
+
+            resetPosition: function () {
+                this.x = this.startingX;
+                this.y = this.startingY;
+            },
+
             punch: function (hand) {
                 if (hand == 'right')
                 {
@@ -126,13 +164,27 @@
                     this.lHand.punching = true;
                 }
             },
+            //added kick function
+            kick: function (foot) {
+                if (foot == 'right')
+                {
+                    this.rFoot.kicking = true;
+                }
+                else
+                {
+                    this.lFoot.kicking = true;
+                }
+            },
 
             pBody: function ()
             {
+                this.score = (this.score + 1);
+
+                console.log("score: " + this.score);
                 console.log("HIT TO BODY");
             }
         };
-        
+
         function preload() {
             game.load.image('head', 'assets/head.png');
             game.load.image('handfoot', 'assets/handfoot.png');
@@ -143,6 +195,8 @@
         function create() {
             game.physics.startSystem(Phaser.Physics.ARCADE);
 
+            scoreText = game.add.text(20, 20, '', style);
+
             p1_left = game.input.keyboard.addKey(Phaser.Keyboard.A);
             p1_right = game.input.keyboard.addKey(Phaser.Keyboard.D);
             p1_punch = game.input.keyboard.addKey(Phaser.Keyboard.R);
@@ -152,6 +206,7 @@
             p2_left = game.input.keyboard.addKey(100);
             p2_right = game.input.keyboard.addKey(102);
             p2_punch = game.input.keyboard.addKey(103);
+            p2_kick = game.input.keyboard.addKey(97);
 
             p1 = new Player(game, 100, 300);
             p2 = new Player(game, 700, 300);
@@ -174,6 +229,19 @@
                 if (p1.rHand.overlap(p2.body))
                     {
                         p1.pBody();
+                        p1.resetPosition();
+                        p2.resetPosition();
+                    }
+            }
+            //kicking controls
+            if (p1_kick.isDown)
+            {
+                p1.kick('right');
+                if (p1.rFoot.overlap(p2.body))
+                    {
+                        p1.pBody();
+                        p1.resetPosition();
+                        p2.resetPosition();
                     }
             }
 
@@ -192,26 +260,37 @@
                 if (p2.lHand.overlap(p1.body))
                     {
                         p2.pBody();
+                        p1.resetPosition();
+                        p2.resetPosition();
+                    }
+            }
+
+            if (p2_kick.isDown)
+            {
+                p2.kick('left');
+                if (p2.lFoot.overlap(p1.body))
+                    {
+                        p2.pBody();
+                        p1.resetPosition();
+                        p2.resetPosition();
                     }
             }
 
             p1.update();
             p2.update();
-            
+
+            scoreText.text = 'player 1: ' + p1.score + '\nplayer 2: ' + p2.score;
+
+
             game.stage.backgroundColor = '#2d2d2d';
 
-            game.physics.arcade.collide(p1.body, p2.body, bodyTouch, null, this);
         }
 
         function render() {
             game.debug.bodyInfo(p1.rHand, 16, 24);
+
         }
 
-        function bodyTouch(obj1, obj2)
-        {
-            game.stage.backgroundColor = '#992d2d';
-            console.log("HIT!");
-        }
 
     };
 
