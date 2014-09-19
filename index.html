@@ -34,12 +34,14 @@
         var p2_right;
         var p2_punch;
         var p2_kick;
+        var p2_block;
 
         function Player(game, x, y) //sprites are added to game and player is just a collection of data
         {
             this.score = 0;
             this.startingX = x;
             this.startingY = y;
+            this.block = false;
 
             this.x = x;
             this.y = y;
@@ -147,10 +149,14 @@
 
 
             moveLeft: function () { // (x += 1) is the same as (x = x + 1)
-                this.x -= 2;
+                if (!this.block) {
+                    this.x -= 2;
+                }
             },
             moveRight: function () {
+                if (!this.block) {
                 this.x += 2;
+                }
             },
 
             resetPosition: function () {
@@ -221,6 +227,7 @@
             p2_right = game.input.keyboard.addKey(102);
             p2_punch = game.input.keyboard.addKey(103);
             p2_kick = game.input.keyboard.addKey(97);
+            p2_block = game.input.keyboard.addKey(105);
 
             p1 = new Player(game, 100, 300);
             p2 = new Player(game, 700, 300);
@@ -233,6 +240,8 @@
             {
                 p1.moveLeft();
             }
+            p1_block.onDown.add(function () {p1.block = true;}, this);
+            p1_block.onUp.add(function () {p1.block = false;}, this);
             if (p1_right.isDown)
             {
                 p1.moveRight();
@@ -241,7 +250,7 @@
             {
                 
                 p1.punch('right');
-                if (p1.rHand.overlap(p2.body))
+                if (p1.rHand.overlap(p2.body) && !p2.block)
                     {
                         p1.pBody();
                         p1.resetPosition();
@@ -252,7 +261,7 @@
             if (p1_kick.isDown)
             {
                 p1.kick('right');
-                if (p1.rFoot.overlap(p2.body))
+                if (p1.rFoot.overlap(p2.body) && !p2.block)
                     {
                         p1.pBody();
                         p1.resetPosition();
@@ -264,6 +273,8 @@
             {
                 p2.moveLeft();
             }
+            p2_block.onDown.add(function () {p2.block = true;}, this);
+            p2_block.onUp.add(function () {p2.block = false;}, this);
             if (p2_right.isDown)
             {
                 p2.moveRight();
@@ -272,7 +283,7 @@
             if (p2_punch.isDown)
             {
                 p2.punch('left');
-                if (p2.lHand.overlap(p1.body))
+                if (p2.lHand.overlap(p1.body) && !p1.block)
                     {
                         p2.pBody();
                         p1.resetPosition();
@@ -283,7 +294,7 @@
             if (p2_kick.isDown)
             {
                 p2.kick('left');
-                if (p2.lFoot.overlap(p1.body))
+                if (p2.lFoot.overlap(p1.body) && !p1.block)
                     {
                         p2.pBody();
                         p1.resetPosition();
